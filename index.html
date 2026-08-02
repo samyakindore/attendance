@@ -15,7 +15,6 @@
             min-height: 100vh; 
         }
 
-        /* Login Container */
         .login-container { 
             background: #fff; 
             padding: 40px; 
@@ -41,11 +40,12 @@
             border-radius: 8px; 
             font-weight: 600; 
             transition: background 0.2s; 
+            position: relative;
         }
         .login-btn { width: 100%; padding: 12px; font-size: 15px; }
         .login-btn:hover, .action-btn:hover { background: #0284c7; }
+        .action-btn:disabled, .login-btn:disabled { background: #94a3b8; cursor: not-allowed; }
 
-        /* Dashboard Container */
         .dashboard { 
             background: #fff; 
             padding: 25px; 
@@ -57,7 +57,6 @@
         }
         .hidden { display: none !important; }
 
-        /* Navigation Header Tabs */
         .nav-tabs {
             display: flex;
             gap: 10px;
@@ -79,14 +78,24 @@
             cursor: pointer;
             font-size: 13px;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .tab-btn.active {
             background: #0ea5e9;
             color: white;
             box-shadow: 0 4px 12px rgba(14,165,233,0.2);
         }
+        .count-badge {
+            background: rgba(0,0,0,0.15);
+            padding: 2px 7px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .tab-btn.active .count-badge { background: rgba(255,255,255,0.25); color: #fff; }
 
-        /* Toolbar & Quick Filter Segment */
         .toolbar { 
             display: flex; 
             justify-content: space-between; 
@@ -94,29 +103,6 @@
             margin-bottom: 20px; 
             flex-wrap: wrap; 
             gap: 15px; 
-        }
-        .filter-toggle-group {
-            display: flex;
-            background: #f1f5f9;
-            padding: 4px;
-            border-radius: 8px;
-            gap: 4px;
-        }
-        .filter-toggle-btn {
-            border: none;
-            background: transparent;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #64748b;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .filter-toggle-btn.active {
-            background: #ffffff;
-            color: #0ea5e9;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         .search-box {
@@ -141,13 +127,11 @@
             font-size: 14px;
         }
 
-        /* Banners */
         .error-banner, .success-banner { padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; display: none; font-size: 14px; font-weight: 500; }
         .error-banner { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
         .success-banner { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
         .loading { text-align: center; padding: 40px; color: #64748b; font-size: 15px; }
 
-        /* Card Layouts */
         .record-card {
             background: #ffffff;
             border: 1px solid #e2e8f0;
@@ -156,12 +140,12 @@
             margin-bottom: 16px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             display: grid;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
         }
-        .card-attendance { grid-template-columns: 2fr 1.5fr 1.5fr 1fr; }
-        .card-extended { grid-template-columns: 1.5fr 1fr 2fr 1.5fr 1.2fr; border-left: 4px solid #ef4444; }
-        .card-tracking { grid-template-columns: 1.5fr 1.5fr 2fr 1.2fr; }
+        .card-attendance { grid-template-columns: 0.3fr 1.6fr 1.2fr 1fr 1.2fr; }
+        .card-tracking { grid-template-columns: 1.4fr 1.1fr 1.8fr 1fr; border-left: 4px solid #10b981; }
+        .card-extended { grid-template-columns: 1.5fr 1.3fr 2fr 1.5fr 1.2fr; border-left: 4px solid #ef4444; }
 
         .card-col { display: flex; flex-direction: column; justify-content: center; }
         .card-col h4 { margin: 0 0 6px 0; font-size: 15px; color: #0f172a; font-weight: 600; }
@@ -179,14 +163,13 @@
             align-self: flex-start;
         }
 
-        /* Unified Single Progress Bar */
         .progress-bar-container {
             width: 100%;
             background-color: #e2e8f0;
             border-radius: 6px;
-            height: 10px;
+            height: 8px;
             overflow: hidden;
-            margin: 8px 0 2px 0;
+            margin: 6px 0 2px 0;
             position: relative;
         }
         .progress-bar-fill {
@@ -197,7 +180,7 @@
             transition: width 0.1s ease;
         }
 
-        textarea, input[type="date"], select {
+        textarea, input[type="date"], select, input[type="number"], input[type="range"] {
             width: 100%;
             padding: 9px 12px;
             border: 1px solid #cbd5e1;
@@ -207,11 +190,8 @@
             outline: none;
             background: #fff;
         }
-        textarea { resize: vertical; height: 55px; }
-        textarea:focus, input:focus { border-color: #0ea5e9; box-shadow: 0 0 0 2px rgba(14,165,233,0.1); }
-
-        .attendance-toggle { display: flex; gap: 8px; align-items: center; }
-        .attendance-checkbox { width: 18px; height: 18px; accent-color: #10b981; cursor: pointer; }
+        textarea { resize: vertical; height: 50px; }
+        textarea:focus, input:focus, select:focus { border-color: #0ea5e9; box-shadow: 0 0 0 2px rgba(14,165,233,0.1); }
 
         .submit-bar {
             margin-top: 25px;
@@ -224,61 +204,105 @@
             border: 1px solid #e2e8f0;
         }
 
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s ease-in-out infinite;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         @media(max-width: 1100px) {
-            .card-attendance, .card-extended, .card-tracking { grid-template-columns: 1fr; }
+            .card-attendance, .card-tracking, .card-extended { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <!-- TRAINER LOGIN SECTION -->
+    <!-- LOGIN SECTION -->
     <div id="loginSection" class="login-container">
-        <h2>Trainer Portal Login</h2>
+        <h2>Portal Login</h2>
         <div id="loginError" class="error-banner"></div>
         
         <div class="input-group">
-            <label>Select Trainer Name</label>
+            <label>Select Faculty / Trainer</label>
             <select id="trainerName">
-                <option value="">-- Choose Trainer --</option>
-                <option value="Vishal Sir">Vishal Sir</option>
-                <option value="Simran Ma'am">Simran Ma'am</option>
-                <option value="Jaya Ma'am">Jaya Ma'am</option>
-                <option value="Mayank">Mayank</option>
-                <option value="Rahul">Rahul</option>
+                <option value="">-- Choose User --</option>
+                <option value="Mayank">Mayank (Admin)</option>
+                <option value="Pravisha">Pravisha (Admin)</option>
+                <option value="Simran">Simran</option>
+                <option value="Jaya">Jaya</option>
+                <option value="Priyanka">Priyanka</option>
+                <option value="Vishal">Vishal</option>
+                <option value="Vardaan">Vardaan</option>
+                <option value="Himanshu">Himanshu</option>
+                <option value="Sohail">Sohail</option>
             </select>
         </div>
 
         <div class="input-group">
-            <label>Mobile Number (PIN)</label>
-            <input type="text" id="phonePIN" placeholder="Enter mobile number" onkeydown="if(event.key === 'Enter') handleLogin()">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter password" onkeydown="if(event.key === 'Enter') handleLogin()">
         </div>
 
-        <button class="login-btn" onclick="handleLogin()">Check-In & Open Portal</button>
+        <button class="login-btn" onclick="handleLogin()">Login to Portal</button>
     </div>
 
-    <!-- MAIN DASHBOARD CONTAINER -->
+    <!-- MAIN DASHBOARD -->
     <div id="dashboardSection" class="dashboard hidden">
         
-        <!-- Navigation Header Tabs -->
         <div class="nav-tabs">
             <div class="tab-buttons">
-                <button class="tab-btn active" onclick="switchTab('attendanceTab', this)">Attendance & Notes</button>
-                <button class="tab-btn" onclick="switchTab('extendedTab', this)">Extended Students</button>
-                <button class="tab-btn" onclick="switchTab('trackingTab', this)">Course & Batch Tracking</button>
+                <button class="tab-btn active" onclick="switchTab('attendanceTab', this)">
+                    Attendance <span id="countAttendance" class="count-badge">0</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('trackingTab', this)">
+                    Course Tracking <span id="countTracking" class="count-badge">0</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('extendedTab', this)">
+                    Extended Students <span id="countExtended" class="count-badge">0</span>
+                </button>
             </div>
-            <div style="font-size: 14px; color: #475569;">Trainer: <strong id="loggedInTrainer" style="color:#0ea5e9;"></strong></div>
+            <div style="display: flex; gap: 15px; align-items: center; font-size: 14px;">
+                <div id="adminDropdownContainer" class="hidden" style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:12px; color:#64748b; font-weight:600;">VIEW FACULTY:</span>
+                    <select id="adminFacultyFilter" onchange="renderActiveTab()" style="padding:6px 10px; font-size:12px; border-radius:6px;">
+                        <option value="ALL">All Faculty Students</option>
+                        <option value="Mayank">Mayank</option>
+                        <option value="Pravisha">Pravisha</option>
+                        <option value="Simran">Simran</option>
+                        <option value="Jaya">Jaya</option>
+                        <option value="Priyanka">Priyanka</option>
+                        <option value="Vishal">Vishal</option>
+                        <option value="Vardaan">Vardaan</option>
+                        <option value="Himanshu">Himanshu</option>
+                        <option value="Sohail">Sohail</option>
+                    </select>
+                </div>
+                <div>User: <strong id="loggedInTrainer" style="color:#0ea5e9;"></strong> (<span id="userRoleBadge" style="font-size:12px;"></span>)</div>
+            </div>
         </div>
 
         <div id="appError" class="error-banner"></div>
         <div id="successMessage" class="success-banner"></div>
 
-        <!-- ================= TAB 1: ATTENDANCE & SESSION TOPICS ================= -->
+        <!-- ================= TAB 1: ATTENDANCE ================= -->
         <div id="attendanceTab" class="tab-content">
-            <div class="toolbar">
-                <div class="filter-toggle-group">
-                    <button class="filter-toggle-btn active" onclick="setAttendanceFilter('pending', this)">Pending & Late Arrivals</button>
-                    <button class="filter-toggle-btn" onclick="setAttendanceFilter('present', this)">Marked Present</button>
-                    <button class="filter-toggle-btn" onclick="setAttendanceFilter('all', this)">Show All Students</button>
+            <div class="toolbar" style="gap: 15px; align-items: center;">
+                <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; flex: 1;">
+                    <div style="min-width: 200px;">
+                        <label style="font-size: 11px; font-weight: 700; color: #64748b; display: block; margin-bottom: 4px; text-transform: uppercase;">Filter Course</label>
+                        <select id="attCourseFilter" onchange="renderAttendance()">
+                            <option value="ALL">-- All Courses --</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="search-box">
                     <span class="search-icon">🔍</span>
@@ -286,29 +310,47 @@
                 </div>
             </div>
 
-            <!-- Session Topic Note Input Box -->
-            <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
-                <label style="font-size: 12px; font-weight: 700; color: #334155; display: block; margin-bottom: 6px; text-transform: uppercase;">Today's Session Topics Taught *</label>
-                <textarea id="sessionNotes" placeholder="Describe what was covered in today's lecture..."></textarea>
+            <div style="background: #f8fafc; padding: 14px 16px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px; display: flex; gap: 15px; align-items: center;">
+                <div style="flex: 1;">
+                    <label style="font-size: 11px; font-weight: 700; color: #334155; display: block; margin-bottom: 4px; text-transform: uppercase;">Batch General Remarks / Session Topic *</label>
+                    <textarea id="sessionNotes" placeholder="Enter batch remarks or topics taught for selected students..." style="height: 42px;"></textarea>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: flex-end;">
+                    <button class="action-btn" style="background:#10b981; height: 42px;" onclick="toggleSelectAll(true)">Select All</button>
+                    <button class="action-btn" style="background:#64748b; height: 42px;" onclick="toggleSelectAll(false)">Deselect All</button>
+                </div>
             </div>
 
             <div id="attendanceCardsContainer"><div class="loading">Loading students from Master Sheet...</div></div>
 
             <div class="submit-bar">
-                <div style="display: flex; gap: 10px;">
-                    <button class="action-btn" style="background:#10b981;" onclick="markVisibleAttendance(true)">Mark Visible Present</button>
-                    <button class="action-btn" style="background:#ef4444;" onclick="markVisibleAttendance(false)">Mark Visible Absent</button>
-                </div>
-                <button class="action-btn" onclick="submitAttendanceData()" style="padding: 12px 24px; font-size: 14px;">Save & Update Attendance</button>
+                <div style="font-size: 13px; color: #64748b;">Only selected students will be marked present and removed from your daily attendance list.</div>
+                <button id="attSubmitBtn" class="action-btn" onclick="submitAttendanceData()" style="padding: 12px 28px; font-size: 14px;">Save & Mark Selected Present</button>
             </div>
         </div>
 
-        <!-- ================= TAB 2: EXTENDED STUDENTS MANAGEMENT ================= -->
+        <!-- ================= TAB 2: COURSE TRACKING ================= -->
+        <div id="trackingTab" class="tab-content hidden">
+            <div class="toolbar">
+                <div>
+                    <h3 style="margin:0; color:#0f172a;">Course Tracking & Progress</h3>
+                    <p style="margin:4px 0 0 0; font-size:13px; color:#64748b;">Update completion percentages and existing/new trainer comments against the master sheet.</p>
+                </div>
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="trackSearch" placeholder="Search student..." oninput="renderTracking()">
+                </div>
+            </div>
+
+            <div id="trackingCardsContainer"></div>
+        </div>
+
+        <!-- ================= TAB 3: EXTENDED STUDENTS ================= -->
         <div id="extendedTab" class="tab-content hidden">
             <div class="toolbar">
                 <div>
                     <h3 style="margin:0; color:#0f172a;">Extended / Overdue Students Review</h3>
-                    <p style="margin:4px 0 0 0; font-size:13px; color:#64748b;">Students whose course duration has exceeded.</p>
+                    <p style="margin:4px 0 0 0; font-size:13px; color:#64748b;">Admission date + duration exceeded current date. Extension remarks required.</p>
                 </div>
                 <div class="search-box">
                     <span class="search-icon">🔍</span>
@@ -317,69 +359,67 @@
             </div>
 
             <div id="extendedCardsContainer"></div>
-
-            <div class="submit-bar">
-                <div></div>
-                <button class="action-btn" onclick="showSuccess('Extended updates saved!')" style="padding: 12px 24px; font-size: 14px;">Save Extended Updates</button>
-            </div>
-        </div>
-
-        <!-- ================= TAB 3: COURSE COMPLETION & TRACKING ================= -->
-        <div id="trackingTab" class="tab-content hidden">
-            <div class="toolbar">
-                <div>
-                    <h3 style="margin:0; color:#0f172a;">Course & Batch Tracking</h3>
-                    <p style="margin:4px 0 0 0; font-size:13px; color:#64748b;">Monitor syllabus coverage percentage.</p>
-                </div>
-                <div class="search-box">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" id="trackSearch" placeholder="Search student name..." oninput="renderTracking()">
-                </div>
-            </div>
-
-            <div id="trackingCardsContainer"></div>
-
-            <div class="submit-bar">
-                <div></div>
-                <button class="action-btn" onclick="showSuccess('Tracking notes saved!')" style="padding: 12px 24px; font-size: 14px;">Save Tracking Notes</button>
-            </div>
         </div>
 
     </div>
 
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwKl9p73rSayjDHkksQvSrhQaNKswnKJ0xcZHxvizb2BkHjsdA9ilkCfXuLAnv1Rrg68A/exec";
-        
-        const TRAINER_PHONES = {
-            "Vishal Sir": "9826011111",
-            "Simran Ma'am": "9826022222",
-            "Jaya Ma'am": "9826033333",
-            "Mayank": "9826012345",
-            "Rahul": "9826023456"
-        };
+        const ADMIN_USERS = ["Mayank", "Pravisha"];
 
         let allStudents = [];
-        let currentTrainer = "";
-        let currentAttFilter = "pending";
+        let loggedInUser = "";
+        let userRole = "Trainer";
+
+        function escapeHtml(text) {
+            if (!text) return "";
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function formatDateToDDMMYYYY(dateInput) {
+            if (!dateInput) return "";
+            let clean = String(dateInput).split('T')[0];
+            let parts = clean.split('-');
+            if (parts.length === 3) {
+                return `${parts[2]}-${parts[1]}-${parts[0]}`;
+            }
+            return clean;
+        }
 
         function handleLogin() {
-            const trainer = document.getElementById("trainerName").value;
-            const phone = document.getElementById("phonePIN").value.trim();
+            const user = document.getElementById("trainerName").value;
+            const password = document.getElementById("loginPassword").value.trim();
             const errorDiv = document.getElementById("loginError");
 
             errorDiv.style.display = "none";
-            if (!trainer) { errorDiv.innerText = "Please select your name."; errorDiv.style.display = "block"; return; }
-            if (!TRAINER_PHONES[trainer] || TRAINER_PHONES[trainer] !== phone) {
-                errorDiv.innerText = "Invalid mobile number for selected trainer.";
+            if (!user) { errorDiv.innerText = "Please select your name."; errorDiv.style.display = "block"; return; }
+            
+            const expectedPassword = user + "@2026";
+            if (password !== expectedPassword) {
+                errorDiv.innerText = "Invalid password.";
                 errorDiv.style.display = "block";
                 return;
             }
 
-            currentTrainer = trainer;
-            document.getElementById("loggedInTrainer").innerText = currentTrainer;
+            loggedInUser = user;
+            userRole = ADMIN_USERS.includes(user) ? "Admin" : "Trainer";
+
+            document.getElementById("loggedInTrainer").innerText = loggedInUser;
+            document.getElementById("userRoleBadge").innerText = userRole;
+
+            if (userRole === "Admin") {
+                document.getElementById("adminDropdownContainer").classList.remove("hidden");
+            }
+
             document.getElementById("loginSection").classList.add("hidden");
             document.getElementById("dashboardSection").classList.remove("hidden");
 
+            switchTab('attendanceTab', document.querySelector('.tab-btn'));
             fetchStudentsFromSheet();
         }
 
@@ -387,31 +427,83 @@
             try {
                 let response = await fetch(WEB_APP_URL);
                 let data = await response.json();
+                let todayStr = new Date().toISOString().split('T')[0];
+
+                allStudents = data.filter(s => {
+                    let statusStr = String(s.status || "").trim().toLowerCase();
+                    return statusStr === "running";
+                }).map((s, index) => {
+                    let cleanDate = s.admissionDate ? String(s.admissionDate).split('T')[0] : todayStr;
+                    let durationNum = parseFloat(s.duration) || 1; 
+                    
+                    let admDateObj = new Date(cleanDate);
+                    admDateObj.setDate(admDateObj.getDate() + Math.round(durationNum * 30));
+                    let calculatedDeadline = admDateObj.toISOString().split('T')[0];
+
+                    let finalDeadline = s.newCompletionDate ? String(s.newCompletionDate).split('T')[0] : calculatedDeadline;
+                    let normalizedFormNo = String(s.formNo || "").trim();
+                    let trainersMarked = Array.isArray(s.markedTrainers) ? s.markedTrainers : [];
+
+                    return {
+                        rowIndex: index + 1,
+                        formNo: normalizedFormNo,
+                        studentName: s.studentName,
+                        mobileNo: s.mobileNo,
+                        faculty: s.faculty || "",
+                        course: s.course,
+                        duration: s.duration,
+                        admissionDate: cleanDate,
+                        deadlineDate: finalDeadline,
+                        status: s.status,
+                        selectedForAttendance: false,
+                        completionPercent: Number(s.completionPercent) || 0,
+                        studentComment: s.studentComment || "",
+                        extendedRemarks: s.extendedRemarks || "",
+                        newCompletionDate: finalDeadline,
+                        markedTrainers: trainersMarked
+                    };
+                });
                 
-                allStudents = data.map((s, index) => ({
-                    rowIndex: index + 1,
-                    formNo: s.formNo,
-                    studentName: s.studentName,
-                    mobileNo: s.mobileNo,
-                    faculty: s.faculty,
-                    course: s.course,
-                    duration: s.duration,
-                    admissionDate: s.admissionDate,
-                    status: s.status,
-                    present: false,
-                    markedToday: false,
-                    studentComment: "",
-                    completionPercent: 0,
-                    endDate: s.admissionDate // Fallback if needed
-                }));
-                
-                renderAttendance();
-                renderExtended();
-                renderTracking();
+                populateCourseDropdown();
+                updateTabCounts();
+                renderActiveTab();
             } catch (err) {
                 console.error("Failed to load students:", err);
                 showError("Could not load student list from Master sheet.");
             }
+        }
+
+        function populateCourseDropdown() {
+            const courseSelect = document.getElementById("attCourseFilter");
+            const currentVal = courseSelect.value;
+            const assigned = getAssignedStudents().filter(s => !s.markedTrainers.includes(loggedInUser));
+            
+            const courses = [...new Set(assigned.map(s => s.course))].filter(Boolean).sort();
+            
+            courseSelect.innerHTML = `<option value="ALL">-- All Courses (${assigned.length}) --</option>`;
+            courses.forEach(c => {
+                const count = assigned.filter(s => s.course === c).length;
+                const opt = document.createElement("option");
+                opt.value = c;
+                opt.innerText = `${c} (${count})`;
+                courseSelect.appendChild(opt);
+            });
+            courseSelect.value = courses.includes(currentVal) ? currentVal : "ALL";
+        }
+
+        function updateTabCounts() {
+            const assigned = getAssignedStudents();
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            const unmarkedCount = assigned.filter(s => !s.markedTrainers.includes(loggedInUser)).length;
+            document.getElementById("countAttendance").innerText = unmarkedCount;
+            document.getElementById("countTracking").innerText = assigned.length;
+
+            const overdueCount = assigned.filter(s => {
+                let targetDate = s.newCompletionDate || s.deadlineDate;
+                return targetDate < todayStr;
+            }).length;
+            document.getElementById("countExtended").innerText = overdueCount;
         }
 
         function showSuccess(msg) { 
@@ -430,116 +522,169 @@
             document.getElementById(tabId).classList.remove("hidden");
             btnElement.classList.add("active");
 
-            if (tabId === 'attendanceTab') renderAttendance();
-            if (tabId === 'extendedTab') renderExtended();
-            if (tabId === 'trackingTab') renderTracking();
+            renderActiveTab();
         }
 
-        function setAttendanceFilter(filterType, btnEl) {
-            currentAttFilter = filterType;
-            document.querySelectorAll(".filter-toggle-btn").forEach(b => b.classList.remove("active"));
-            btnEl.classList.add("active");
-            renderAttendance();
+        function renderActiveTab() {
+            updateTabCounts();
+            if (!document.getElementById("attendanceTab").classList.contains("hidden")) renderAttendance();
+            if (!document.getElementById("trackingTab").classList.contains("hidden")) renderTracking();
+            if (!document.getElementById("extendedTab").classList.contains("hidden")) renderExtended();
         }
 
+        function getAssignedStudents() {
+            if (userRole === "Admin") {
+                const adminFilter = document.getElementById("adminFacultyFilter").value;
+                if (adminFilter === "ALL") return allStudents;
+                return allStudents.filter(s => s.faculty.toLowerCase().includes(adminFilter.toLowerCase()));
+            } else {
+                return allStudents.filter(s => s.faculty.toLowerCase().includes(loggedInUser.toLowerCase()));
+            }
+        }
+
+        // TAB 1: ATTENDANCE
         function renderAttendance() {
+            populateCourseDropdown();
             const container = document.getElementById("attendanceCardsContainer");
             container.innerHTML = "";
             const query = document.getElementById("attSearch").value.toLowerCase().trim();
+            const selectedCourse = document.getElementById("attCourseFilter").value;
 
-            const filtered = allStudents.filter(s => {
-                if (query && !s.studentName.toLowerCase().includes(query) && !s.mobileNo.includes(query)) {
-                    return false;
-                }
-                if (currentAttFilter === "pending") {
-                    return !s.markedToday || (s.markedToday && !s.present);
-                } else if (currentAttFilter === "present") {
-                    return s.markedToday && s.present;
-                }
+            const assignedList = getAssignedStudents().filter(s => !s.markedTrainers.includes(loggedInUser));
+
+            const filtered = assignedList.filter(s => {
+                if (selectedCourse !== "ALL" && s.course !== selectedCourse) return false;
+                if (query && !s.studentName.toLowerCase().includes(query) && !s.mobileNo.includes(query)) return false;
                 return true;
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="loading">No students in this view.</div>`;
+                container.innerHTML = `<div class="loading">All students consumed or no pending attendance found for this filter!</div>`;
                 return;
             }
 
             filtered.forEach(s => {
                 const card = document.createElement("div");
                 card.className = "record-card card-attendance";
-                const statusBadge = s.markedToday ? (s.present ? '<span style="color:#10b981; font-weight:bold; font-size:11px;">[Marked Present]</span>' : '<span style="color:#ef4444; font-weight:bold; font-size:11px;">[Marked Absent - Late Arrival?]</span>') : '';
+                const pct = s.completionPercent || 0;
 
                 card.innerHTML = `
+                    <div class="card-col" style="align-items: center;">
+                        <input type="checkbox" style="width: 20px; height: 20px; accent-color: #0ea5e9; cursor: pointer;" ${s.selectedForAttendance ? "checked" : ""} onchange="updateSelection('${s.formNo}', this.checked)">
+                    </div>
                     <div class="card-col">
                         <span class="badge">Form #${escapeHtml(s.formNo)} | Course: ${escapeHtml(s.course)}</span>
-                        <div class="sub-text">Faculty: ${escapeHtml(s.faculty)} ${statusBadge}</div>
                         <h4>${escapeHtml(s.studentName)}</h4>
-                        <div class="sub-text">📞 ${escapeHtml(s.mobileNo)}</div>
+                        <div class="sub-text">📞 ${escapeHtml(s.mobileNo)} | Faculty: ${escapeHtml(s.faculty)}</div>
                     </div>
                     <div class="card-col">
-                        <div class="sub-text"><b>Admission:</b> ${s.admissionDate}</div>
-                        <div class="sub-text"><b>Duration:</b> ${escapeHtml(s.duration)}</div>
+                        <div class="sub-text"><b>Admission:</b> ${formatDateToDDMMYYYY(s.admissionDate)}</div>
+                        <div class="sub-text"><b>Last DOC:</b> ${formatDateToDDMMYYYY(s.deadlineDate)}</div>
                     </div>
                     <div class="card-col">
-                        <div class="sub-text" style="font-weight:600; color:#334155; margin-bottom:3px;">Student Note / Remark</div>
-                        <textarea placeholder="Add specific note..." onchange="updateField(${s.rowIndex}, 'studentComment', this.value)">${escapeHtml(s.studentComment || "")}</textarea>
-                    </div>
-                    <div class="card-col">
-                        <div class="attendance-toggle">
-                            <input type="checkbox" class="attendance-checkbox" id="att_${s.rowIndex}" ${s.present ? "checked" : ""} onchange="updateAttendanceStatus(${s.rowIndex}, this.checked)">
-                            <label for="att_${s.rowIndex}" id="label_${s.rowIndex}" style="color: ${s.present ? '#10b981' : '#ef4444'}; font-weight:600;">
-                                ${s.present ? 'Present' : 'Absent'}
-                            </label>
+                        <div class="sub-text" style="justify-content: space-between;">
+                            <span><b>Progress</b></span>
+                            <span style="font-weight:700; color:#0ea5e9;">${pct}%</span>
                         </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: ${pct}%;"></div>
+                        </div>
+                    </div>
+                    <div class="card-col">
+                        <div class="sub-text" style="font-style:italic; color:#64748b;">${escapeHtml(s.studentComment || "No comment yet")}</div>
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        function renderExtended() {
-            const container = document.getElementById("extendedCardsContainer");
-            container.innerHTML = "";
-            const query = document.getElementById("extSearch").value.toLowerCase().trim();
+        function updateSelection(formNo, isSelected) {
+            const student = allStudents.find(s => s.formNo === String(formNo).trim());
+            if (student) student.selectedForAttendance = isSelected;
+        }
 
-            const filtered = allStudents.filter(s => {
-                if (query && !s.studentName.toLowerCase().includes(query)) return false;
-                return true;
+        function toggleSelectAll(selectState) {
+            const query = document.getElementById("attSearch").value.toLowerCase().trim();
+            const selectedCourse = document.getElementById("attCourseFilter").value;
+
+            const assignedList = getAssignedStudents().filter(s => !s.markedTrainers.includes(loggedInUser));
+            assignedList.forEach(s => {
+                const matchesCourse = (selectedCourse === "ALL" || s.course === selectedCourse);
+                const matchesQuery = (!query || s.studentName.toLowerCase().includes(query) || s.mobileNo.includes(query));
+                if (matchesCourse && matchesQuery) {
+                    s.selectedForAttendance = selectState;
+                }
             });
+            renderAttendance();
+        }
 
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="loading">No students found.</div>`;
+        async function submitAttendanceData() {
+            const notes = document.getElementById("sessionNotes").value.trim();
+            if (!notes) {
+                showError("Please enter batch general remarks / session topic before saving!");
                 return;
             }
 
-            filtered.forEach(s => {
-                const card = document.createElement("div");
-                card.className = "record-card card-extended";
-                card.innerHTML = `
-                    <div class="card-col">
-                        <h4>${escapeHtml(s.studentName)}</h4>
-                        <div class="sub-text">📞 ${escapeHtml(s.mobileNo)}</div>
-                        <div class="sub-text"><b>Course:</b> ${escapeHtml(s.course)}</div>
-                        <div class="sub-text"><b>Faculty:</b> ${escapeHtml(s.faculty)}</div>
-                    </div>
-                    <div class="card-col"><div class="sub-text"><b>Admission:</b> ${s.admissionDate}</div></div>
-                    <div class="card-col"><textarea placeholder="Explain delay..." onchange="updateField(${s.rowIndex}, 'delayComment', this.value)"></textarea></div>
-                    <div class="card-col"><input type="date"></div>
-                    <div class="card-col"><button class="action-btn" onclick="showSuccess('Updated record!')">Update</button></div>
-                `;
-                container.appendChild(card);
-            });
+            const selectedList = getAssignedStudents().filter(s => !s.markedTrainers.includes(loggedInUser) && s.selectedForAttendance);
+            if (selectedList.length === 0) {
+                showError("Please select at least one student to update attendance.");
+                return;
+            }
+
+            const submitBtn = document.getElementById("attSubmitBtn");
+            const originalText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="spinner"></span>Saving ${selectedList.length} record(s)...`;
+
+            try {
+                for (let s of selectedList) {
+                    s.markedTrainers.push(loggedInUser);
+                    s.selectedForAttendance = false;
+
+                    let payload = {
+                        formNo: s.formNo,
+                        studentName: s.studentName,
+                        faculty: s.faculty,
+                        trainerLoggedIn: loggedInUser,
+                        attendanceStatus: "Present",
+                        sessionTopics: notes
+                    };
+
+                    await fetch(WEB_APP_URL, {
+                        method: "POST",
+                        body: JSON.stringify(payload)
+                    });
+                }
+
+                document.getElementById("sessionNotes").value = "";
+                updateTabCounts();
+                renderAttendance();
+                showSuccess(`Successfully marked ${selectedList.length} student(s) present and logged in Attendance logs!`);
+            } catch (err) {
+                console.error("Sync error:", err);
+                showError("Failed to sync attendance records.");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
         }
 
+        // TAB 2: COURSE TRACKING
         function renderTracking() {
             const container = document.getElementById("trackingCardsContainer");
             container.innerHTML = "";
             const query = document.getElementById("trackSearch").value.toLowerCase().trim();
 
-            const filtered = allStudents.filter(s => {
-                if (query && !s.studentName.toLowerCase().includes(query)) return false;
+            const assignedList = getAssignedStudents();
+            const filtered = assignedList.filter(s => {
+                if (query && !s.studentName.toLowerCase().includes(query) && !s.mobileNo.includes(query)) return false;
                 return true;
             });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="loading">No students found for tracking!</div>`;
+                return;
+            }
 
             filtered.forEach(s => {
                 const card = document.createElement("div");
@@ -548,99 +693,146 @@
 
                 card.innerHTML = `
                     <div class="card-col">
-                        <span class="badge">Course: ${escapeHtml(s.course)}</span>
+                        <span class="badge">Form #${escapeHtml(s.formNo)} | Course: ${escapeHtml(s.course)}</span>
                         <h4>${escapeHtml(s.studentName)}</h4>
-                        <div class="sub-text">📞 ${escapeHtml(s.mobileNo)}</div>
+                        <div class="sub-text">📞 ${escapeHtml(s.mobileNo)} | Faculty: ${escapeHtml(s.faculty)}</div>
                     </div>
                     <div class="card-col">
                         <div class="sub-text" style="justify-content: space-between;">
-                            <span><b>Syllabus Covered</b></span>
-                            <span style="font-weight:700; color:#0ea5e9;" id="pct_val_${s.rowIndex}">${pct}%</span>
+                            <span><b>Progress %</b></span>
+                            <span style="font-weight:700; color:#0ea5e9;" id="track_pct_val_${s.formNo}">${pct}%</span>
                         </div>
-                        <input type="range" min="0" max="100" value="${pct}" oninput="updateCompletionPercent(${s.rowIndex}, this.value)" style="margin-top:6px; cursor:pointer; accent-color:#0ea5e9;">
-                        <div class="progress-bar-container">
-                            <div class="progress-bar-fill" id="bar_${s.rowIndex}" style="width: ${pct}%;"></div>
-                        </div>
+                        <input type="range" min="0" max="100" value="${pct}" oninput="updateTrackingPercent('${s.formNo}', this.value)">
                     </div>
                     <div class="card-col">
-                        <textarea placeholder="Add comments..." onchange="updateField(${s.rowIndex}, 'studentComment', this.value)">${escapeHtml(s.studentComment || "")}</textarea>
+                        <div class="sub-text"><b>History / Comments:</b></div>
+                        <textarea placeholder="Add update or notes..." onchange="updateTrackingComment('${s.formNo}', this.value)">${escapeHtml(s.studentComment)}</textarea>
                     </div>
-                    <div class="card-col">
-                        <button class="action-btn" style="background:#10b981;" onclick="showSuccess('Saved tracking')">Save</button>
+                    <div class="card-col" style="align-items: flex-end;">
+                        <button class="action-btn" onclick="saveTrackingChanges('${s.formNo}')">Save Changes</button>
                     </div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        function updateField(rowIndex, field, val) {
-            const student = allStudents.find(s => s.rowIndex === rowIndex);
-            if (student) student[field] = val;
+        function updateTrackingPercent(formNo, val) {
+            document.getElementById(`track_pct_val_${formNo}`).innerText = val + "%";
+            const student = allStudents.find(s => s.formNo === String(formNo).trim());
+            if (student) student.completionPercent = Number(val);
         }
 
-        function updateAttendanceStatus(rowIndex, isPresent) {
-            const student = allStudents.find(s => s.rowIndex === rowIndex);
-            if (student) student.present = isPresent;
-            const lbl = document.getElementById(`label_${rowIndex}`);
-            if (lbl) {
-                lbl.innerText = isPresent ? 'Present' : 'Absent';
-                lbl.style.color = isPresent ? '#10b981' : '#ef4444';
+        function updateTrackingComment(formNo, val) {
+            const student = allStudents.find(s => s.formNo === String(formNo).trim());
+            if (student) student.studentComment = val;
+        }
+
+        async function saveTrackingChanges(formNo) {
+            const student = allStudents.find(s => s.formNo === String(formNo).trim());
+            if (!student) return;
+
+            try {
+                let payload = {
+                    action: "updateTracking",
+                    formNo: student.formNo,
+                    completionPercent: student.completionPercent,
+                    studentComment: student.studentComment
+                };
+
+                await fetch(WEB_APP_URL, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+                showSuccess(`Successfully updated tracking for ${student.studentName}!`);
+            } catch (err) {
+                console.error("Tracking save error:", err);
+                showError("Failed to save tracking update.");
             }
         }
 
-        function updateCompletionPercent(rowIndex, val) {
-            const student = allStudents.find(s => s.rowIndex === rowIndex);
-            if (student) student.completionPercent = Number(val);
-            const valSpan = document.getElementById(`pct_val_${rowIndex}`);
-            const bar = document.getElementById(`bar_${rowIndex}`);
-            if (valSpan) valSpan.innerText = val + '%';
-            if (bar) bar.style.width = val + '%';
-        }
+        // TAB 3: EXTENDED STUDENTS
+        function renderExtended() {
+            const container = document.getElementById("extendedCardsContainer");
+            container.innerHTML = "";
+            const query = document.getElementById("extSearch").value.toLowerCase().trim();
+            const todayStr = new Date().toISOString().split('T')[0];
 
-        function markVisibleAttendance(status) {
-            allStudents.forEach(s => {
-                s.present = status;
+            const assignedList = getAssignedStudents();
+            const filtered = assignedList.filter(s => {
+                let targetDate = s.newCompletionDate || s.deadlineDate;
+                if (targetDate >= todayStr) return false;
+                if (query && !s.studentName.toLowerCase().includes(query) && !s.mobileNo.includes(query)) return false;
+                return true;
             });
-            renderAttendance();
-        }
 
-        async function submitAttendanceData() {
-            const notes = document.getElementById("sessionNotes").value.trim();
-            if (!notes) {
-                showError("Please enter today's session topics taught before submitting!");
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="loading">No extended or overdue students found!</div>`;
                 return;
             }
 
-            // Sync each student to Google Sheets via Web App URL
-            for (let s of allStudents) {
-                s.markedToday = true;
-                let payload = {
-                    formNo: s.formNo,
-                    studentName: s.studentName,
-                    faculty: s.faculty,
-                    trainerLoggedIn: currentTrainer,
-                    attendanceStatus: s.present ? "Present" : "Absent",
-                    sessionTopics: notes,
-                    studentComment: s.studentComment || "",
-                    completionPercent: s.completionPercent || 0
-                };
+            filtered.forEach(s => {
+                const card = document.createElement("div");
+                card.className = "record-card card-extended";
 
-                try {
-                    await fetch(WEB_APP_URL, {
-                        method: "POST",
-                        body: JSON.stringify(payload)
-                    });
-                } catch (err) {
-                    console.error("Sync error for student:", s.studentName, err);
-                }
-            }
-
-            renderAttendance();
-            showSuccess("Attendance successfully saved and synced to your Daily Attendance Log!");
+                card.innerHTML = `
+                    <div class="card-col">
+                        <span class="badge" style="background:#fee2e2; color:#991b1b;">Overdue | Form #${escapeHtml(s.formNo)}</span>
+                        <h4>${escapeHtml(s.studentName)}</h4>
+                        <div class="sub-text">📞 ${escapeHtml(s.mobileNo)} | Course: ${escapeHtml(s.course)}</div>
+                    </div>
+                    <div class="card-col">
+                        <div class="sub-text"><b>Admission:</b> ${formatDateToDDMMYYYY(s.admissionDate)}</div>
+                        <div class="sub-text" style="color:#ef4444;"><b>Original DOC:</b> ${formatDateToDDMMYYYY(s.deadlineDate)}</div>
+                    </div>
+                    <div class="card-col">
+                        <div class="sub-text"><b>New Proposed Completion Date:</b></div>
+                        <input type="date" value="${s.newCompletionDate || ''}" onchange="updateExtDate('${s.formNo}', this.value)">
+                    </div>
+                    <div class="card-col">
+                        <div class="sub-text"><b>Extension Reason / Remarks:</b></div>
+                        <textarea placeholder="Reason for extension..." onchange="updateExtRemarks('${s.formNo}', this.value)">${escapeHtml(s.extendedRemarks)}</textarea>
+                    </div>
+                    <div class="card-col" style="align-items: flex-end;">
+                        <button class="action-btn" style="background:#ef4444;" onclick="saveExtendedChanges('${s.formNo}')">Update Extension</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
 
-        function escapeHtml(str) {
-            return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        function updateExtDate(formNo, val) {
+            const student = allStudents.find(s => s.formNo === String(formNo).trim());
+            if (student) student.newCompletionDate = val;
+        }
+
+        function updateExtRemarks(formNo, val) {
+            const student = allStudents.find(s => s.formNo === String(formNo).trim());
+            if (student) student.extendedRemarks = val;
+        }
+
+        async function saveExtendedChanges(formNo) {
+            const student = allStudents.find(s => s.formNo === String(formNo).trim());
+            if (!student) return;
+
+            try {
+                let payload = {
+                    action: "updateExtension",
+                    formNo: student.formNo,
+                    newCompletionDate: student.newCompletionDate,
+                    extendedRemarks: student.extendedRemarks
+                };
+
+                await fetch(WEB_APP_URL, {
+                    method: "POST",
+                    body: JSON.stringify(payload)
+                });
+                showSuccess(`Successfully saved extension details for ${student.studentName}!`);
+                updateTabCounts();
+                renderExtended();
+            } catch (err) {
+                console.error("Extension save error:", err);
+                showError("Failed to save extension details.");
+            }
         }
     </script>
 </body>
