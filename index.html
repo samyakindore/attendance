@@ -575,15 +575,15 @@
         }
 
         const customPasswords = {
-          "Mayank": "mayank123",
-          "Pravisha": "pravishapass",
-          "Simran": "simran@pass",
-          "Jaya": "jaya2026",
-          "Priyanka": "priyanka#1",
-          "Vishal": "vishalsecure",
-          "Vardaan": "vardaan123",
-          "Himanshu": "himanshu_pass",
-          "Sohail": "sohail123"
+          "Admin": "admin@2026",
+          "Pravisha": "admin@Pravisha",
+          "Simran": "Simran@2025",
+          "Jaya": "Jaya@2025",
+          "Priyanka": "Priyanka@2025",
+          "Vishal": "Vishal@2025",
+          "Vardaan": "Vardaan@2025",
+          "Himanshu": "Himanshu@2025",
+          "Sohail": "Sohail@2025"
         };
 
         const expectedPassword = customPasswords[user] || "";
@@ -619,7 +619,6 @@
           serverToday = result.today || "";
           const attendanceLookup = result.attendanceLookup || {};
           const students = result.students || [];
-          const defaultToday = serverToday || getClientToday();
           allStudents = students.filter(s => normalizeText(s.status).toLowerCase() === "running").map(s => {
             const formNo = normalizeText(s.formNo);
             const admissionDate = normalizeText(s.admissionDate);
@@ -643,8 +642,9 @@
               completionPercent: Number(s.completionPercent) || 0,
               commentHistory: s.commentHistory || "",
               newComment: "",
-              newCompletionDate: s.newCompletionDate || defaultToday,
+              newCompletionDate: s.newCompletionDate || "",
               extendedRemarks: s.extendedRemarks || "",
+              newExtendedRemark: "",
               todayAttendance: todayAttendance,
               selectedForAttendance: false
             };
@@ -968,8 +968,8 @@
               <div class="progress-bar-container"><div class="progress-bar-fill" style="width:${pct}%;"></div></div>
             </div>
             <div class="card-col">
-              <div class="sub-text"><b>Comment History</b></div>
-              <div class="history-box">${escapeHtml(student.commentHistory || "No history yet")}</div>
+              <div class="sub-text"><b>Previous Extension Remarks / History</b></div>
+              <div class="history-box">${escapeHtml(student.extendedRemarks || "No extended remarks yet")}</div>
             </div>
             <div class="card-col-top">
               <div class="sub-text"><b>New Completion Date <span style="color:#ef4444;">*</span>:</b></div>
@@ -977,7 +977,7 @@
             </div>
             <div class="card-col-top">
               <div class="sub-text"><b>Extension Remarks <span style="color:#ef4444;">*</span>:</b></div>
-              <textarea id="ext_remarks_${escapeHtml(student.formNo)}" placeholder="Reason for extension (Mandatory)..." onchange="updateExtRemarks('${escapeHtml(student.formNo)}', this.value)">${escapeHtml(student.extendedRemarks)}</textarea>
+              <textarea id="ext_remarks_${escapeHtml(student.formNo)}" placeholder="Reason for extension (Mandatory)..." oninput="updateExtRemarks('${escapeHtml(student.formNo)}', this.value)">${escapeHtml(student.newExtendedRemark || '')}</textarea>
             </div>
             <div class="card-col" style="align-items:flex-end;">
               <button class="action-btn" style="background:#ef4444;" onclick="saveExtendedChanges('${escapeHtml(student.formNo)}')">Update Extension</button>
@@ -994,7 +994,7 @@
 
       function updateExtRemarks(formNo, value) {
         const student = allStudents.find(s => s.formNo === normalizeText(formNo));
-        if (student) student.extendedRemarks = value;
+        if (student) student.newExtendedRemark = value;
       }
 
       async function saveExtendedChanges(formNo) {
@@ -1005,7 +1005,7 @@
           document.getElementById("ext_date_" + formNo)?.focus();
           return;
         }
-        if (!normalizeText(student.extendedRemarks)) {
+        if (!normalizeText(student.newExtendedRemark)) {
           showError("Extension Remarks are mandatory.");
           document.getElementById("ext_remarks_" + formNo)?.focus();
           return;
@@ -1015,11 +1015,17 @@
             action: "updateExtension",
             formNo: student.formNo,
             newCompletionDate: student.newCompletionDate,
-            extendedRemarks: student.extendedRemarks
+            extendedRemarks: student.newExtendedRemark,
+            trainerLoggedIn: loggedInUser
           };
           const response = await fetch(WEB_APP_URL, { method: "POST", body: JSON.stringify(payload) });
           const result = await response.json();
           if (result.status !== "success") throw new Error(result.message || "Extension update failed.");
+          
+          student.extendedRemarks = result.extendedRemarks || student.extendedRemarks;
+          student.deadlineDate = student.newCompletionDate;
+          student.newExtendedRemark = "";
+          
           showSuccess("Successfully saved extension details for " + student.studentName + "!");
           updateTabCounts();
           renderExtended();
