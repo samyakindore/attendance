@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trainer Management Portal</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            margin: 0; 
+            padding: 20px 15px; 
+            background: #f4f7f6; 
+            color: #333;
+            min-height: 100vh; 
+        }
+
+        /* Login Container */
+        .login-container { 
+            background: #fff; 
+            padding: 40px; 
+            border-radius: 16px; 
+            width: 100%; 
+            max-width: 420px; 
+            margin: 80px auto; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+            text-align: center; 
+        }
+        .login-container h2 { margin-bottom: 24px; color: #1e293b; font-weight: 600; }
+        .input-group { text-align: left; margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; color: #64748b; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-group input, .input-group select { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; background: #fff; outline: none; transition: border-color 0.2s; }
+        .input-group input:focus, .input-group select:focus { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,0.1); }
+
+        .login-btn, .action-btn { 
+            background: #0ea5e9; 
+            color: white; 
+            border: none; 
+            padding: 10px 18px; 
+            cursor: pointer; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            transition: background 0.2s; 
+        }
+        .login-btn { width: 100%; padding: 12px; font-size: 15px; }
+        .login-btn:hover, .action-btn:hover { background: #0284c7; }
+
+        /* Dashboard Container */
+        .dashboard { 
+            background: #fff; 
+            padding: 25px; 
+            border-radius: 16px; 
+            width: 100%; 
+            max-width: 1350px; 
+            margin: 0 auto; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+        }
+        .hidden { display: none !important; }
+
+        /* Navigation Header Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tab-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+        .tab-btn {
+            background: #f1f5f9;
+            color: #475569;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: #0ea5e9;
+            color: white;
+            box-shadow: 0 4px 12px rgba(14,165,233,0.2);
+        }
+
+        /* Toolbar & Quick Filter Segment */
+        .toolbar { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 20px; 
+            flex-wrap: wrap; 
+            gap: 15px; 
+        }
+        .filter-toggle-group {
+            display: flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 8px;
+            gap: 4px;
+        }
+        .filter-toggle-btn {
+            border: none;
+            background: transparent;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-toggle-btn.active {
+            background: #ffffff;
+            color: #0ea5e9;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 350px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 10px 14px 10px 36px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        /* Banners */
+        .error-banner, .success-banner { padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; display: none; font-size: 14px; font-weight: 500; }
+        .error-banner { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .success-banner { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .loading { text-align: center; padding: 40px; color: #64748b; font-size: 15px; }
+
+        /* Card Layouts */
+        .record-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            display: grid;
+            gap: 20px;
+            align-items: center;
+        }
+        .card-attendance { grid-template-columns: 2fr 1.5fr 1.5fr 1fr; }
+        .card-extended { grid-template-columns: 1.5fr 1fr 2fr 1.5fr 1.2fr; border-left: 4px solid #ef4444; }
+        .card-tracking { grid-template-columns: 1.5fr 1.5fr 2fr 1.2fr; }
+
+        .card-col { display: flex; flex-direction: column; justify-content: center; }
+        .card-col h4 { margin: 0 0 6px 0; font-size: 15px; color: #0f172a; font-weight: 600; }
+        .card-col .sub-text { font-size: 12px; color: #64748b; margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #475569;
+            margin-bottom: 6px;
+            align-self: flex-start;
+        }
+
+        /* Unified Single Progress Bar */
+        .progress-bar-container {
+            width: 100%;
+            background-color: #e2e8f0;
+            border-radius: 6px;
+            height: 10px;
+            overflow: hidden;
+            margin: 8px 0 2px 0;
+            position: relative;
+        }
+        .progress-bar-fill {
+            background-color: #0ea5e9;
+            height: 100%;
+            border-radius: 6px;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        textarea, input[type="date"], select {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            outline: none;
+            background: #fff;
+        }
+        textarea { resize: vertical; height: 55px; }
+        textarea:focus, input:focus { border-color: #0ea5e9; box-shadow: 0 0 0 2px rgba(14,165,233,0.1); }
+
+        .attendance-toggle { display: flex; gap: 8px; align-items: center; }
+        .attendance-checkbox { width: 18px; height: 18px; accent-color: #10b981; cursor: pointer; }
+
+        .submit-bar {
+            margin-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        @media(max-width: 1100px) {
+            .card-attendance, .card-extended, .card-tracking { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TRAINER LOGIN SECTION -->
+    <div id="loginSection" class="login-container">
+        <h2>Trainer Portal Login</h2>
+        <div id="loginError" class="error-banner"></div>
+        
+        <div class="input-group">
+            <label>Select Trainer Name</label>
+            <select id="trainerName">
+                <option value="">-- Choose Trainer --</option>
+                <option value="Vishal Sir">Vishal Sir</option>
+                <option value="Simran Ma'am">Simran Ma'am</option>
+                <option value="Jaya Ma'am">Jaya Ma'am</option>
+                <option value="Mayank">Mayank</option>
+                <option value="Rahul">Rahul</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>Mobile Number (PIN)</label>
+            <input type="text" id="phonePIN" placeholder="Enter mobile number" onkeydown="if(event.key === 'Enter') handleLogin()">
+        </div>
+
+        <button class="login-btn" onclick="handleLogin()">Check-In & Open Portal</button>
+    </div>
+
+    <!-- MAIN DASHBOARD CONTAINER -->
+    <div id="dashboardSection" class="dashboard hidden">
+        
+        <!-- Navigation Header Tabs -->
+        <div class="nav-tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="switchTab('attendanceTab', this)">Attendance & Notes</button>
+                <button class="tab-btn" onclick="switchTab('extendedTab', this)">Extended Students</button>
+                <button class="tab-btn" onclick="switchTab('trackingTab', this)">Course & Batch Tracking</button>
+            </div>
+            <div style="font-size: 14px; color: #475569;">Trainer: <strong id="loggedInTrainer" style="color:#0ea5e9;"></strong></div>
+        </div>
+
+        <div id="appError" class="error-banner"></div>
+        <div id="successMessage" class="success-banner"></div>
+
+        <!-- ================= TAB 1: ATTENDANCE & SESSION TOPICS ================= -->
+        <div id="attendanceTab" class="tab-content">
+            <div class="toolbar">
+                <div class="filter-toggle-group">
+                    <button class="filter-toggle-btn active" onclick="setAttendanceFilter('pending', this)">Pending & Late Arrivals</button>
+                    <button class="filter-toggle-btn" onclick="setAttendanceFilter('present', this)">Marked Present</button>
+                    <button class="filter-toggle-btn" onclick="setAttendanceFilter('all', this)">Show All Students</button>
+                </div>
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="attSearch" placeholder="Search student name or phone..." oninput="renderAttendance()">
+                </div>
+            </div>
+
+            <!-- Session Topic Note Input Box -->
+            <div style="background: #f8fafc; padding: 16px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
+                <label style="font-size: 12px; font-weight: 700; color: #334155; display: block; margin-bottom: 6px; text-transform: uppercase;">Today's Session Topics Taught *</label>
+                <textarea id="sessionNotes" placeholder="Describe what was covered in today's lecture..."></textarea>
+            </div>
+
+            <div id="attendanceCardsContainer"><div class="loading">Loading students from Master Sheet...</div></div>
+
+            <div class="submit-bar">
+                <div style="display: flex; gap: 10px;">
+                    <button class="action-btn" style="background:#10b981;" onclick="markVisibleAttendance(true)">Mark Visible Present</button>
+                    <button class="action-btn" style="background:#ef4444;" onclick="markVisibleAttendance(false)">Mark Visible Absent</button>
+                </div>
+                <button class="action-btn" onclick="submitAttendanceData()" style="padding: 12px 24px; font-size: 14px;">Save & Update Attendance</button>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: EXTENDED STUDENTS MANAGEMENT ================= -->
+        <div id="extendedTab" class="tab-content hidden">
+            <div class="toolbar">
+                <div>
+                    <h3 style="margin:0; color:#0f172a;">Extended / Overdue Students Review</h3>
+                    <p style="margin:4px 0 0 0; font-size:13px; color:#64748b;">Students whose course duration has exceeded.</p>
+                </div>
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="extSearch" placeholder="Search extended student..." oninput="renderExtended()">
+                </div>
+            </div>
+
+            <div id="extendedCardsContainer"></div>
+
+            <div class="submit-bar">
+                <div></div>
+                <button class="action-btn" onclick="showSuccess('Extended updates saved!')" style="padding: 12px 24px; font-size: 14px;">Save Extended Updates</button>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: COURSE COMPLETION & TRACKING ================= -->
+        <div id="trackingTab" class="tab-content hidden">
+            <div class="toolbar">
+                <div>
+                    <h3 style="margin:0; color:#0f172a;">Course & Batch Tracking</h3>
+                    <p style="margin:4px 0 0 0; font-size:13px; color:#64748b;">Monitor syllabus coverage percentage.</p>
+                </div>
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="trackSearch" placeholder="Search student name..." oninput="renderTracking()">
+                </div>
+            </div>
+
+            <div id="trackingCardsContainer"></div>
+
+            <div class="submit-bar">
+                <div></div>
+                <button class="action-btn" onclick="showSuccess('Tracking notes saved!')" style="padding: 12px 24px; font-size: 14px;">Save Tracking Notes</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwKl9p73rSayjDHkksQvSrhQaNKswnKJ0xcZHxvizb2BkHjsdA9ilkCfXuLAnv1Rrg68A/exec";
+        
+        const TRAINER_PHONES = {
+            "Vishal Sir": "9826011111",
+            "Simran Ma'am": "9826022222",
+            "Jaya Ma'am": "9826033333",
+            "Mayank": "9826012345",
+            "Rahul": "9826023456"
+        };
+
+        let allStudents = [];
+        let currentTrainer = "";
+        let currentAttFilter = "pending";
+
+        function handleLogin() {
+            const trainer = document.getElementById("trainerName").value;
+            const phone = document.getElementById("phonePIN").value.trim();
+            const errorDiv = document.getElementById("loginError");
+
+            errorDiv.style.display = "none";
+            if (!trainer) { errorDiv.innerText = "Please select your name."; errorDiv.style.display = "block"; return; }
+            if (!TRAINER_PHONES[trainer] || TRAINER_PHONES[trainer] !== phone) {
+                errorDiv.innerText = "Invalid mobile number for selected trainer.";
+                errorDiv.style.display = "block";
+                return;
+            }
+
+            currentTrainer = trainer;
+            document.getElementById("loggedInTrainer").innerText = currentTrainer;
+            document.getElementById("loginSection").classList.add("hidden");
+            document.getElementById("dashboardSection").classList.remove("hidden");
+
+            fetchStudentsFromSheet();
+        }
+
+        async function fetchStudentsFromSheet() {
+            try {
+                let response = await fetch(WEB_APP_URL);
+                let data = await response.json();
+                
+                allStudents = data.map((s, index) => ({
+                    rowIndex: index + 1,
+                    formNo: s.formNo,
+                    studentName: s.studentName,
+                    mobileNo: s.mobileNo,
+                    faculty: s.faculty,
+                    course: s.course,
+                    duration: s.duration,
+                    admissionDate: s.admissionDate,
+                    status: s.status,
+                    present: false,
+                    markedToday: false,
+                    studentComment: "",
+                    completionPercent: 0,
+                    endDate: s.admissionDate // Fallback if needed
+                }));
+                
+                renderAttendance();
+                renderExtended();
+                renderTracking();
+            } catch (err) {
+                console.error("Failed to load students:", err);
+                showError("Could not load student list from Master sheet.");
+            }
+        }
+
+        function showSuccess(msg) { 
+            const d = document.getElementById("successMessage"); d.innerText = msg; d.style.display = "block";
+            setTimeout(() => d.style.display = "none", 3000);
+        }
+        function showError(msg) { 
+            const d = document.getElementById("appError"); d.innerText = "Error: " + msg; d.style.display = "block";
+            setTimeout(() => d.style.display = "none", 4000);
+        }
+
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+            document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+            
+            document.getElementById(tabId).classList.remove("hidden");
+            btnElement.classList.add("active");
+
+            if (tabId === 'attendanceTab') renderAttendance();
+            if (tabId === 'extendedTab') renderExtended();
+            if (tabId === 'trackingTab') renderTracking();
+        }
+
+        function setAttendanceFilter(filterType, btnEl) {
+            currentAttFilter = filterType;
+            document.querySelectorAll(".filter-toggle-btn").forEach(b => b.classList.remove("active"));
+            btnEl.classList.add("active");
+            renderAttendance();
+        }
+
+        function renderAttendance() {
+            const container = document.getElementById("attendanceCardsContainer");
+            container.innerHTML = "";
+            const query = document.getElementById("attSearch").value.toLowerCase().trim();
+
+            const filtered = allStudents.filter(s => {
+                if (query && !s.studentName.toLowerCase().includes(query) && !s.mobileNo.includes(query)) {
+                    return false;
+                }
+                if (currentAttFilter === "pending") {
+                    return !s.markedToday || (s.markedToday && !s.present);
+                } else if (currentAttFilter === "present") {
+                    return s.markedToday && s.present;
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="loading">No students in this view.</div>`;
+                return;
+            }
+
+            filtered.forEach(s => {
+                const card = document.createElement("div");
+                card.className = "record-card card-attendance";
+                const statusBadge = s.markedToday ? (s.present ? '<span style="color:#10b981; font-weight:bold; font-size:11px;">[Marked Present]</span>' : '<span style="color:#ef4444; font-weight:bold; font-size:11px;">[Marked Absent - Late Arrival?]</span>') : '';
+
+                card.innerHTML = `
+                    <div class="card-col">
+                        <span class="badge">Form #${escapeHtml(s.formNo)} | Course: ${escapeHtml(s.course)}</span>
+                        <div class="sub-text">Faculty: ${escapeHtml(s.faculty)} ${statusBadge}</div>
+                        <h4>${escapeHtml(s.studentName)}</h4>
+                        <div class="sub-text">📞 ${escapeHtml(s.mobileNo)}</div>
+                    </div>
+                    <div class="card-col">
+                        <div class="sub-text"><b>Admission:</b> ${s.admissionDate}</div>
+                        <div class="sub-text"><b>Duration:</b> ${escapeHtml(s.duration)}</div>
+                    </div>
+                    <div class="card-col">
+                        <div class="sub-text" style="font-weight:600; color:#334155; margin-bottom:3px;">Student Note / Remark</div>
+                        <textarea placeholder="Add specific note..." onchange="updateField(${s.rowIndex}, 'studentComment', this.value)">${escapeHtml(s.studentComment || "")}</textarea>
+                    </div>
+                    <div class="card-col">
+                        <div class="attendance-toggle">
+                            <input type="checkbox" class="attendance-checkbox" id="att_${s.rowIndex}" ${s.present ? "checked" : ""} onchange="updateAttendanceStatus(${s.rowIndex}, this.checked)">
+                            <label for="att_${s.rowIndex}" id="label_${s.rowIndex}" style="color: ${s.present ? '#10b981' : '#ef4444'}; font-weight:600;">
+                                ${s.present ? 'Present' : 'Absent'}
+                            </label>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderExtended() {
+            const container = document.getElementById("extendedCardsContainer");
+            container.innerHTML = "";
+            const query = document.getElementById("extSearch").value.toLowerCase().trim();
+
+            const filtered = allStudents.filter(s => {
+                if (query && !s.studentName.toLowerCase().includes(query)) return false;
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="loading">No students found.</div>`;
+                return;
+            }
+
+            filtered.forEach(s => {
+                const card = document.createElement("div");
+                card.className = "record-card card-extended";
+                card.innerHTML = `
+                    <div class="card-col">
+                        <h4>${escapeHtml(s.studentName)}</h4>
+                        <div class="sub-text">📞 ${escapeHtml(s.mobileNo)}</div>
+                        <div class="sub-text"><b>Course:</b> ${escapeHtml(s.course)}</div>
+                        <div class="sub-text"><b>Faculty:</b> ${escapeHtml(s.faculty)}</div>
+                    </div>
+                    <div class="card-col"><div class="sub-text"><b>Admission:</b> ${s.admissionDate}</div></div>
+                    <div class="card-col"><textarea placeholder="Explain delay..." onchange="updateField(${s.rowIndex}, 'delayComment', this.value)"></textarea></div>
+                    <div class="card-col"><input type="date"></div>
+                    <div class="card-col"><button class="action-btn" onclick="showSuccess('Updated record!')">Update</button></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderTracking() {
+            const container = document.getElementById("trackingCardsContainer");
+            container.innerHTML = "";
+            const query = document.getElementById("trackSearch").value.toLowerCase().trim();
+
+            const filtered = allStudents.filter(s => {
+                if (query && !s.studentName.toLowerCase().includes(query)) return false;
+                return true;
+            });
+
+            filtered.forEach(s => {
+                const card = document.createElement("div");
+                card.className = "record-card card-tracking";
+                const pct = s.completionPercent || 0;
+
+                card.innerHTML = `
+                    <div class="card-col">
+                        <span class="badge">Course: ${escapeHtml(s.course)}</span>
+                        <h4>${escapeHtml(s.studentName)}</h4>
+                        <div class="sub-text">📞 ${escapeHtml(s.mobileNo)}</div>
+                    </div>
+                    <div class="card-col">
+                        <div class="sub-text" style="justify-content: space-between;">
+                            <span><b>Syllabus Covered</b></span>
+                            <span style="font-weight:700; color:#0ea5e9;" id="pct_val_${s.rowIndex}">${pct}%</span>
+                        </div>
+                        <input type="range" min="0" max="100" value="${pct}" oninput="updateCompletionPercent(${s.rowIndex}, this.value)" style="margin-top:6px; cursor:pointer; accent-color:#0ea5e9;">
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" id="bar_${s.rowIndex}" style="width: ${pct}%;"></div>
+                        </div>
+                    </div>
+                    <div class="card-col">
+                        <textarea placeholder="Add comments..." onchange="updateField(${s.rowIndex}, 'studentComment', this.value)">${escapeHtml(s.studentComment || "")}</textarea>
+                    </div>
+                    <div class="card-col">
+                        <button class="action-btn" style="background:#10b981;" onclick="showSuccess('Saved tracking')">Save</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function updateField(rowIndex, field, val) {
+            const student = allStudents.find(s => s.rowIndex === rowIndex);
+            if (student) student[field] = val;
+        }
+
+        function updateAttendanceStatus(rowIndex, isPresent) {
+            const student = allStudents.find(s => s.rowIndex === rowIndex);
+            if (student) student.present = isPresent;
+            const lbl = document.getElementById(`label_${rowIndex}`);
+            if (lbl) {
+                lbl.innerText = isPresent ? 'Present' : 'Absent';
+                lbl.style.color = isPresent ? '#10b981' : '#ef4444';
+            }
+        }
+
+        function updateCompletionPercent(rowIndex, val) {
+            const student = allStudents.find(s => s.rowIndex === rowIndex);
+            if (student) student.completionPercent = Number(val);
+            const valSpan = document.getElementById(`pct_val_${rowIndex}`);
+            const bar = document.getElementById(`bar_${rowIndex}`);
+            if (valSpan) valSpan.innerText = val + '%';
+            if (bar) bar.style.width = val + '%';
+        }
+
+        function markVisibleAttendance(status) {
+            allStudents.forEach(s => {
+                s.present = status;
+            });
+            renderAttendance();
+        }
+
+        async function submitAttendanceData() {
+            const notes = document.getElementById("sessionNotes").value.trim();
+            if (!notes) {
+                showError("Please enter today's session topics taught before submitting!");
+                return;
+            }
+
+            // Sync each student to Google Sheets via Web App URL
+            for (let s of allStudents) {
+                s.markedToday = true;
+                let payload = {
+                    formNo: s.formNo,
+                    studentName: s.studentName,
+                    faculty: s.faculty,
+                    trainerLoggedIn: currentTrainer,
+                    attendanceStatus: s.present ? "Present" : "Absent",
+                    sessionTopics: notes,
+                    studentComment: s.studentComment || "",
+                    completionPercent: s.completionPercent || 0
+                };
+
+                try {
+                    await fetch(WEB_APP_URL, {
+                        method: "POST",
+                        body: JSON.stringify(payload)
+                    });
+                } catch (err) {
+                    console.error("Sync error for student:", s.studentName, err);
+                }
+            }
+
+            renderAttendance();
+            showSuccess("Attendance successfully saved and synced to your Daily Attendance Log!");
+        }
+
+        function escapeHtml(str) {
+            return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
